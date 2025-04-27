@@ -1,0 +1,181 @@
+import 'dart:io';
+
+// Implementasi Stack dengan ukuran tetap seperti pada percobaan 1
+class FixedStack {
+  int last_elemen = 0;
+  int maxStack = 0;
+  List<dynamic> elemen = [];
+  
+  FixedStack(int maxElements) {
+    last_elemen = -1;
+    maxStack = maxElements - 1;
+    elemen = List<dynamic>.filled(maxElements, null);
+  }
+  
+  bool isEmpty() {
+    return last_elemen == -1;
+  }
+  
+  bool isFull() {
+    return last_elemen == maxStack;
+  }
+  
+  void push(dynamic data) {
+    if (isFull()) {
+      print("stack overflow");
+    } else {
+      last_elemen = last_elemen + 1;
+      elemen[last_elemen] = data;
+    }
+  }
+  
+  dynamic pop() {
+    dynamic data = null;
+    if (isEmpty()) {
+      print("stack Underflow");
+      return data;
+    } else {
+      data = elemen[last_elemen];
+      elemen[last_elemen] = null;
+      last_elemen = last_elemen - 1;
+      return data;
+    }
+  }
+}
+
+// 1a. Konversi Desimal dengan Fixed Stack
+class DecimalConverterFixed {
+  // Konversi ke biner
+  String decimalToBinary(int decimal) {
+    FixedStack stack = FixedStack(100); // Asumsi ukuran maksimal
+    int num = decimal;
+    
+    // Jika nilai 0, langsung return "0"
+    if (num == 0) return "0";
+    
+    // Konversi ke biner dan push ke stack
+    while (num > 0) {
+      stack.push(num % 2);
+      num = num ~/ 2;
+    }
+    
+    // Pop dari stack untuk mendapatkan hasil
+    String result = "";
+    while (!stack.isEmpty()) {
+      result += stack.pop().toString();
+    }
+    
+    return result;
+  }
+  
+  // Konversi ke oktal
+  String decimalToOctal(int decimal) {
+    FixedStack stack = FixedStack(100); // Asumsi ukuran maksimal
+    int num = decimal;
+    
+    // Jika nilai 0, langsung return "0"
+    if (num == 0) return "0";
+    
+    // Konversi ke oktal dan push ke stack
+    while (num > 0) {
+      stack.push(num % 8);
+      num = num ~/ 8;
+    }
+    
+    // Pop dari stack untuk mendapatkan hasil
+    String result = "";
+    while (!stack.isEmpty()) {
+      result += stack.pop().toString();
+    }
+    
+    return result;
+  }
+  
+  // Konversi ke heksadesimal
+  String decimalToHexadecimal(int decimal) {
+    FixedStack stack = FixedStack(100); // Asumsi ukuran maksimal
+    int num = decimal;
+    
+    // Jika nilai 0, langsung return "0"
+    if (num == 0) return "0";
+    
+    // Mapping untuk digit heksadesimal
+    List<String> hexDigits = ["0", "1", "2", "3", "4", "5", "6", "7", 
+                             "8", "9", "A", "B", "C", "D", "E", "F"];
+    
+    // Konversi ke heksadesimal dan push ke stack
+    while (num > 0) {
+      stack.push(hexDigits[num % 16]);
+      num = num ~/ 16;
+    }
+    
+    // Pop dari stack untuk mendapatkan hasil
+    String result = "";
+    while (!stack.isEmpty()) {
+      result += stack.pop();
+    }
+    
+    return result;
+  }
+}
+
+// 1b. Palindrom checker dengan Fixed Stack
+class PalindromeCheckerFixed {
+  // Fungsi untuk membalik kalimat menggunakan stack
+  String reverseString(String input) {
+    FixedStack stack = FixedStack(1000); // Asumsi ukuran maksimal
+    
+    // Push semua karakter ke stack
+    for (int i = 0; i < input.length; i++) {
+      stack.push(input[i]);
+    }
+    
+    // Pop dari stack untuk mendapatkan string terbalik
+    String reversed = "";
+    while (!stack.isEmpty()) {
+      reversed += stack.pop();
+    }
+    
+    return reversed;
+  }
+  
+  // Fungsi untuk mengecek apakah string palindrom
+  bool isPalindrome(String input) {
+    String reversed = reverseString(input);
+    return input == reversed;
+  }
+}
+
+void main() {
+  // Demo konversi desimal
+  DecimalConverterFixed converter = DecimalConverterFixed();
+  
+  stdout.write("Masukkan nilai desimal = ");
+  int decimal = int.parse(stdin.readLineSync()!);
+  
+  String binary = converter.decimalToBinary(decimal);
+  String octal = converter.decimalToOctal(decimal);
+  String hexadecimal = converter.decimalToHexadecimal(decimal);
+  
+  print("Hasil nilai biner = $binary");
+  print("Hasil nilai oktal = $octal");
+  print("Hasil nilai heksadesimal = $hexadecimal");
+  
+  print("\n"); // Separator
+  
+  // Demo palindrom
+  PalindromeCheckerFixed checker = PalindromeCheckerFixed();
+  
+  stdout.write("Masukkan kalimat : ");
+  String input = stdin.readLineSync()!;
+  
+  String reversed = checker.reverseString(input);
+  bool isPalindrome = checker.isPalindrome(input);
+  
+  print("Hasil = $reversed");
+  if (isPalindrome) {
+    print("Palindrom");
+  } else {
+    print("Bukan palindrom");
+  }
+}
