@@ -1,0 +1,138 @@
+import 'dart:io';
+
+class Customer {
+  String name;
+  String transactionType;
+  
+  Customer(this.name, this.transactionType);
+  
+  @override
+  String toString() {
+    return "Customer: $name, Transaction: $transactionType";
+  }
+}
+
+class BankQueue {
+  List<Customer> _customers = [];
+  int _front = 0;
+  int _rear = -1;
+  int _maxCapacity;
+  
+  BankQueue(this._maxCapacity) {
+    _customers = List<Customer>.filled(_maxCapacity, Customer("", ""));
+  }
+  
+  bool isEmpty() {
+    return _rear < _front;
+  }
+  
+  bool isFull() {
+    return _rear >= _maxCapacity - 1;
+  }
+  
+  void enqueue(Customer customer) {
+    if (isFull()) {
+      print("\n>>> Antrian penuh! Mohon tunggu sampai ada nasabah yang dilayani. <<<");
+      return;
+    }
+    
+    _rear++;
+    _customers[_rear] = customer;
+    print("\n>>> Nasabah ${customer.name} berhasil masuk antrian dengan nomor ${_rear + 1} <<<");
+  }
+  
+  Customer dequeue() {
+    if (isEmpty()) {
+      print("\n>>> Antrian kosong! Tidak ada nasabah yang sedang mengantri. <<<");
+      return Customer("", "");
+    }
+    
+    Customer customer = _customers[_front];
+    _customers[_front] = Customer("", "");
+    _front++;
+    
+    print("\n>>> Nasabah ${customer.name} sedang dilayani <<<");
+    return customer;
+  }
+  
+  void displayQueue() {
+    if (isEmpty()) {
+      print("\n>>> Antrian kosong! Tidak ada nasabah yang sedang mengantri. <<<");
+      return;
+    }
+    
+    print("\n======== DAFTAR ANTRIAN BANK ========");
+    print("Jumlah antrian: ${_rear - _front + 1}");
+    print("Kapasitas: $_maxCapacity");
+    print("====================================");
+    
+    for (int i = _front; i <= _rear; i++) {
+      print("Nomor Antrian ${i + 1}: ${_customers[i]}");
+    }
+    print("====================================");
+  }
+  
+  int size() {
+    if (isEmpty()) return 0;
+    return _rear - _front + 1;
+  }
+}
+
+void main() {
+  BankQueue bankQueue = BankQueue(5);
+  bool running = true;
+  
+  while (running) {
+    print("\n========= BANK QUEUE SYSTEM =========");
+    print("1. Tambah Nasabah ke Antrian");
+    print("2. Layani Nasabah");
+    print("3. Tampilkan Daftar Antrian");
+    print("4. Cek Status Antrian");
+    print("5. Keluar");
+    print("=====================================");
+    stdout.write("Pilih menu (1-5): ");
+    
+    String? input = stdin.readLineSync();
+    
+    switch (input) {
+      case "1":
+        if (bankQueue.isFull()) {
+          print("\n>>> Antrian penuh! Mohon tunggu sampai ada nasabah yang dilayani. <<<");
+          break;
+        }
+        
+        stdout.write("\nMasukkan nama nasabah: ");
+        String? name = stdin.readLineSync() ?? "";
+        
+        stdout.write("Jenis transaksi (Setor/Tarik/Transfer): ");
+        String? transaction = stdin.readLineSync() ?? "";
+        
+        Customer newCustomer = Customer(name, transaction);
+        bankQueue.enqueue(newCustomer);
+        break;
+        
+      case "2":
+        bankQueue.dequeue();
+        break;
+        
+      case "3":
+        bankQueue.displayQueue();
+        break;
+        
+      case "4":
+        print("\n======== STATUS ANTRIAN ========");
+        print("Jumlah antrian saat ini: ${bankQueue.size()}");
+        print("Status antrian: ${bankQueue.isEmpty() ? 'Kosong' : bankQueue.isFull() ? 'Penuh' : 'Tersedia'}");
+        print("===============================");
+        break;
+        
+      case "5":
+        print("\n>>> Terima kasih telah menggunakan Bank Queue System <<<");
+        running = false;
+        break;
+        
+      default:
+        print("\n>>> Pilihan tidak valid. Silakan pilih menu 1-5 <<<");
+    }
+  }
+}
