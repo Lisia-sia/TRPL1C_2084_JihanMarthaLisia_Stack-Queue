@@ -1,0 +1,113 @@
+import 'dart:io';
+
+class Stack<T> {
+  final List<T> _stack = [];
+  
+  void push(T element) {
+    _stack.add(element);
+  }
+  
+  T pop() {
+    if (_stack.isEmpty) {
+      throw StateError("No elements in the Stack");
+    } else {
+      T lastElement = _stack.last;
+      _stack.removeLast();
+      return lastElement;
+    }
+  }
+  
+  bool isEmpty() {
+    return _stack.isEmpty;
+  }
+}
+
+class DecimalConverter {
+  // Konversi ke biner
+  String decimalToBinary(int decimal) {
+    Stack<int> stack = Stack<int>();
+    int num = decimal;
+    
+    // Jika nilai 0, langsung return "0"
+    if (num == 0) return "0";
+    
+    // Konversi ke biner dan push ke stack
+    while (num > 0) {
+      stack.push(num % 2);
+      num = num ~/ 2;
+    }
+    
+    // Pop dari stack untuk mendapatkan hasil
+    String result = "";
+    while (!stack.isEmpty()) {
+      result += stack.pop().toString();
+    }
+    
+    return result;
+  }
+  
+  // Konversi ke oktal
+  String decimalToOctal(int decimal) {
+    Stack<int> stack = Stack<int>();
+    int num = decimal;
+    
+    // Jika nilai 0, langsung return "0"
+    if (num == 0) return "0";
+    
+    // Konversi ke oktal dan push ke stack
+    while (num > 0) {
+      stack.push(num % 8);
+      num = num ~/ 8;
+    }
+    
+    // Pop dari stack untuk mendapatkan hasil
+    String result = "";
+    while (!stack.isEmpty()) {
+      result += stack.pop().toString();
+    }
+    
+    return result;
+  }
+  
+  // Konversi ke heksadesimal
+  String decimalToHexadecimal(int decimal) {
+    Stack<String> stack = Stack<String>();
+    int num = decimal;
+    
+    // Jika nilai 0, langsung return "0"
+    if (num == 0) return "0";
+    
+    // Mapping untuk digit heksadesimal
+    List<String> hexDigits = ["0", "1", "2", "3", "4", "5", "6", "7", 
+                             "8", "9", "A", "B", "C", "D", "E", "F"];
+    
+    // Konversi ke heksadesimal dan push ke stack
+    while (num > 0) {
+      stack.push(hexDigits[num % 16]);
+      num = num ~/ 16;
+    }
+    
+    // Pop dari stack untuk mendapatkan hasil
+    String result = "";
+    while (!stack.isEmpty()) {
+      result += stack.pop();
+    }
+    
+    return result;
+  }
+}
+
+void main() {
+  DecimalConverter converter = DecimalConverter();
+  
+  stdout.write("Masukkan nilai desimal = ");
+  int decimal = int.parse(stdin.readLineSync()!);
+  
+  String binary = converter.decimalToBinary(decimal);
+  String octal = converter.decimalToOctal(decimal);
+  String hexadecimal = converter.decimalToHexadecimal(decimal);
+  
+  print("Hasil nilai biner = $binary");
+  print("Hasil nilai oktal = $octal");
+  print("Hasil nilai heksadesimal = $hexadecimal");
+}
