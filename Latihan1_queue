@@ -1,0 +1,111 @@
+class CircularQueue {
+  List<int> _elements = [];
+  int _front = 0;
+  int _rear = -1;
+  int _size = 0;
+  int _capacity = 0;
+
+  CircularQueue(int capacity) {
+    this._capacity = capacity;
+    this._elements = List<int>.filled(capacity, 0);
+    this._front = 0;
+    this._rear = -1;
+    this._size = 0;
+  }
+
+  bool isEmpty() {
+    return _size == 0;
+  }
+
+  bool isFull() {
+    return _size == _capacity;
+  }
+
+  void enqueue(int data) {
+    if (isFull()) {
+      print("Queue Overflow, tidak dapat mengisi data lagi");
+      return;
+    }
+    
+    // Circular increment of rear
+    _rear = (_rear + 1) % _capacity;
+    _elements[_rear] = data;
+    _size++;
+    print('$data enqueued to queue');
+  }
+
+  int dequeue() {
+    if (isEmpty()) {
+      print("Queue Underflow");
+      return -1;
+    }
+    
+    int data = _elements[_front];
+    // Circular increment of front
+    _front = (_front + 1) % _capacity;
+    _size--;
+    
+    print('$data dequeued from queue');
+    return data;
+  }
+
+  int frontElement() {
+    if (isEmpty()) return -1;
+    return _elements[_front];
+  }
+
+  int rearElement() {
+    if (isEmpty()) return -1;
+    return _elements[_rear];
+  }
+
+  void printQueue() {
+    if (isEmpty()) {
+      print("Queue masih kosong");
+      return;
+    }
+    
+    print("Elemen dalam queue:");
+    int count = _size;
+    int index = _front;
+    
+    while (count > 0) {
+      print("Index $index: ${_elements[index]}");
+      index = (index + 1) % _capacity;
+      count--;
+    }
+  }
+}
+
+void main() {
+  CircularQueue q = CircularQueue(5);
+  
+  print("Status awal queue: ${q.isEmpty() ? 'kosong' : 'tidak kosong'}");
+  
+  q.enqueue(10);
+  q.enqueue(20);
+  q.enqueue(30);
+  q.enqueue(40);
+  q.enqueue(50);
+  
+  print("\nCoba tambah data ke queue yang sudah penuh:");
+  q.enqueue(60); // Queue Overflow
+  
+  print("\nStatus queue: ${q.isFull() ? 'penuh' : 'tidak penuh'}");
+  print("Front element: ${q.frontElement()}");
+  print("Rear element: ${q.rearElement()}");
+  
+  print("\nMenampilkan seluruh elemen:");
+  q.printQueue();
+  
+  print("\nMenghapus elemen dari queue:");
+  q.dequeue();
+  q.dequeue();
+  
+  print("\nMenambahkan elemen baru setelah dequeue:");
+  q.enqueue(60);
+  q.enqueue(70);
+  
+  print("\nMenampilkan seluruh elemen setelah operasi:");
+  q.printQueue();
+}
